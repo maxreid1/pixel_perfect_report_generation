@@ -1,0 +1,3126 @@
+// This is finding the tables to fill with the JSON data
+function findContainingTable(element) {
+  if (element.getType() == 'TABLE') {
+    return element;
+  }
+  var parent = element.getParent()
+  if (parent) {
+    Logger.log(parent);
+    return findContainingTable(parent);
+  }
+}
+
+/* Finding row within table */
+function findContainingTableRow(element) {
+  if (element.getType() == 'TABLE_ROW') {
+    return element;
+  }
+  var parent = element.getParent()
+  if (parent) {
+    Logger.log(parent.getType());
+    return findContainingTableRow(parent);
+  }
+}
+
+// finding the placeholders
+function findPlaceholder(element, placeholder) {
+  if (element.getNumChildren !== undefined) {
+    for (var i=0;i<element.getNumChildren();i++) {
+      var child = element.getChild(i);
+      //Logger.log(child.getType());    
+      if (child.getType() == 'PARAGRAPH') {
+        //Logger.log(child.getText());    
+        if (child.getText().indexOf(placeholder) > -1) {
+          return child;
+        }
+      }    
+      var res = findPlaceholder(child, placeholder);
+      if (res) {
+        return res;
+      }
+    }
+  }
+  return null;
+}
+
+function to2decimal(num) {
+  return Math.round(num * 100) / 100;
+}
+
+function num2str(value) {
+   var decimals = 2;
+   return value.toFixed(decimals);
+}
+
+function test() {
+  insertData("1Wu2YyLVEHeKqWVH8FeAU6q88pcCLe80sjOrua1ArBPQ", "Max Reid", "maxwellreid@google.com","Last 7 Days",
+  [
+    {
+      "Transaction Date": "2021-02-09",
+      "Transaction ID": "827103",
+      "Category": "Cash Withdrawal",
+      "Amount": "$560.00",
+      "Balance": "$5,745.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$560.00"
+    },
+    {
+      "Transaction Date": "2021-02-06",
+      "Transaction ID": "826874",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,305.35",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2021-01-30",
+      "Transaction ID": "3463790",
+      "Category": "Interest Credited",
+      "Amount": "$22.50",
+      "Balance": "$4,939.61",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.50"
+    },
+    {
+      "Transaction Date": "2021-01-30",
+      "Transaction ID": "827034",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,938.15",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2021-01-23",
+      "Transaction ID": "826938",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$150.00",
+      "Balance": "$4,917.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$150.00"
+    },
+    {
+      "Transaction Date": "2021-01-22",
+      "Transaction ID": "826935",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$220.00",
+      "Balance": "$5,067.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$220.00"
+    },
+    {
+      "Transaction Date": "2021-01-19",
+      "Transaction ID": "826936",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$120.00",
+      "Balance": "$5,287.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$120.00"
+    },
+    {
+      "Transaction Date": "2021-01-14",
+      "Transaction ID": "826934",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$160.00",
+      "Balance": "$5,407.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$160.00"
+    },
+    {
+      "Transaction Date": "2021-01-10",
+      "Transaction ID": "827102",
+      "Category": "Cash Withdrawal",
+      "Amount": "$780.00",
+      "Balance": "$5,567.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$780.00"
+    },
+    {
+      "Transaction Date": "2021-01-09",
+      "Transaction ID": "826933",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$250.00",
+      "Balance": "$6,347.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$250.00"
+    },
+    {
+      "Transaction Date": "2021-01-07",
+      "Transaction ID": "826937",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$60.00",
+      "Balance": "$6,597.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$60.00"
+    },
+    {
+      "Transaction Date": "2021-01-06",
+      "Transaction ID": "826873",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,657.11",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2021-01-03",
+      "Transaction ID": "826896",
+      "Category": "Cash Withdrawal",
+      "Amount": "$610.00",
+      "Balance": "$5,289.91",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$610.00"
+    },
+    {
+      "Transaction Date": "2020-12-30",
+      "Transaction ID": "3463789",
+      "Category": "Interest Credited",
+      "Amount": "$23.71",
+      "Balance": "$5,901.37",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$23.71"
+    },
+    {
+      "Transaction Date": "2020-12-30",
+      "Transaction ID": "827033",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,899.91",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-12-19",
+      "Transaction ID": "826901",
+      "Category": "Creditcard Withdrawal",
+      "Amount": "$270.00",
+      "Balance": "$5,877.65",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$270.00"
+    },
+    {
+      "Transaction Date": "2020-12-11",
+      "Transaction ID": "827101",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,390.00",
+      "Balance": "$6,147.65",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,390.00"
+    },
+    {
+      "Transaction Date": "2020-12-06",
+      "Transaction ID": "826872",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$7,537.65",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2020-11-29",
+      "Transaction ID": "3463788",
+      "Category": "Interest Credited",
+      "Amount": "$22.03",
+      "Balance": "$5,488.31",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.03"
+    },
+    {
+      "Transaction Date": "2020-11-29",
+      "Transaction ID": "827032",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,486.85",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-11-11",
+      "Transaction ID": "827100",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,190.00",
+      "Balance": "$5,466.28",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,190.00"
+    },
+    {
+      "Transaction Date": "2020-11-06",
+      "Transaction ID": "826871",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,656.28",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-10-30",
+      "Transaction ID": "3463787",
+      "Category": "Interest Credited",
+      "Amount": "$23.61",
+      "Balance": "$5,290.54",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$23.61"
+    },
+    {
+      "Transaction Date": "2020-10-30",
+      "Transaction ID": "827031",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,289.08",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-10-12",
+      "Transaction ID": "826965",
+      "Category": "Cash Withdrawal",
+      "Amount": "$200.00",
+      "Balance": "$6,256.93",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$200.00"
+    },
+    {
+      "Transaction Date": "2020-10-12",
+      "Transaction ID": "827099",
+      "Category": "Cash Withdrawal",
+      "Amount": "$990.00",
+      "Balance": "$5,266.93",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$990.00"
+    },
+    {
+      "Transaction Date": "2020-10-06",
+      "Transaction ID": "826870",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,456.93",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-09-29",
+      "Transaction ID": "827030",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,089.73",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-09-29",
+      "Transaction ID": "3463786",
+      "Category": "Interest Credited",
+      "Amount": "$20.15",
+      "Balance": "$5,091.19",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.15"
+    },
+    {
+      "Transaction Date": "2020-09-12",
+      "Transaction ID": "827098",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,040.00",
+      "Balance": "$5,071.04",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,040.00"
+    },
+    {
+      "Transaction Date": "2020-09-06",
+      "Transaction ID": "826869",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,111.04",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-08-30",
+      "Transaction ID": "827029",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,743.84",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-08-30",
+      "Transaction ID": "3463785",
+      "Category": "Interest Credited",
+      "Amount": "$18.31",
+      "Balance": "$4,745.30",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.31"
+    },
+    {
+      "Transaction Date": "2020-08-13",
+      "Transaction ID": "827097",
+      "Category": "Cash Withdrawal",
+      "Amount": "$810.00",
+      "Balance": "$4,726.99",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$810.00"
+    },
+    {
+      "Transaction Date": "2020-08-06",
+      "Transaction ID": "826868",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,536.99",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-07-30",
+      "Transaction ID": "3463784",
+      "Category": "Interest Credited",
+      "Amount": "$15.44",
+      "Balance": "$4,171.25",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$15.44"
+    },
+    {
+      "Transaction Date": "2020-07-30",
+      "Transaction ID": "827028",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,169.79",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-07-14",
+      "Transaction ID": "827096",
+      "Category": "Cash Withdrawal",
+      "Amount": "$580.00",
+      "Balance": "$4,155.81",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$580.00"
+    },
+    {
+      "Transaction Date": "2020-07-06",
+      "Transaction ID": "826867",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,735.81",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-06-29",
+      "Transaction ID": "3463783",
+      "Category": "Interest Credited",
+      "Amount": "$20.16",
+      "Balance": "$3,370.07",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.16"
+    },
+    {
+      "Transaction Date": "2020-06-29",
+      "Transaction ID": "827027",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$3,368.61",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-06-21",
+      "Transaction ID": "826889",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,930.00",
+      "Balance": "$3,349.91",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,930.00"
+    },
+    {
+      "Transaction Date": "2020-06-14",
+      "Transaction ID": "827095",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,220.00",
+      "Balance": "$5,279.91",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,220.00"
+    },
+    {
+      "Transaction Date": "2020-06-06",
+      "Transaction ID": "826866",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$6,499.91",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2020-06-04",
+      "Transaction ID": "826963",
+      "Category": "Cash Withdrawal",
+      "Amount": "$350.00",
+      "Balance": "$4,449.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$350.00"
+    },
+    {
+      "Transaction Date": "2020-05-30",
+      "Transaction ID": "827026",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,799.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-05-30",
+      "Transaction ID": "3463782",
+      "Category": "Interest Credited",
+      "Amount": "$18.48",
+      "Balance": "$4,800.57",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.48"
+    },
+    {
+      "Transaction Date": "2020-05-15",
+      "Transaction ID": "827094",
+      "Category": "Cash Withdrawal",
+      "Amount": "$830.00",
+      "Balance": "$4,782.10",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$830.00"
+    },
+    {
+      "Transaction Date": "2020-05-06",
+      "Transaction ID": "826865",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,612.10",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-04-29",
+      "Transaction ID": "826967",
+      "Category": "Cash Withdrawal",
+      "Amount": "$340.00",
+      "Balance": "$4,244.90",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$340.00"
+    },
+    {
+      "Transaction Date": "2020-04-29",
+      "Transaction ID": "827025",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,584.90",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-04-29",
+      "Transaction ID": "3463781",
+      "Category": "Interest Credited",
+      "Amount": "$21.33",
+      "Balance": "$4,586.36",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.33"
+    },
+    {
+      "Transaction Date": "2020-04-22",
+      "Transaction ID": "826966",
+      "Category": "Cash Withdrawal",
+      "Amount": "$410.00",
+      "Balance": "$4,565.03",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$410.00"
+    },
+    {
+      "Transaction Date": "2020-04-15",
+      "Transaction ID": "827093",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,220.00",
+      "Balance": "$4,975.03",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,220.00"
+    },
+    {
+      "Transaction Date": "2020-04-06",
+      "Transaction ID": "826864",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,195.03",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-04-01",
+      "Transaction ID": "826964",
+      "Category": "Cash Withdrawal",
+      "Amount": "$60.00",
+      "Balance": "$4,827.83",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$60.00"
+    },
+    {
+      "Transaction Date": "2020-03-30",
+      "Transaction ID": "827024",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,887.83",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-03-30",
+      "Transaction ID": "3463780",
+      "Category": "Interest Credited",
+      "Amount": "$19.19",
+      "Balance": "$4,889.29",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$19.19"
+    },
+    {
+      "Transaction Date": "2020-03-16",
+      "Transaction ID": "827092",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,010.00",
+      "Balance": "$4,870.11",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,010.00"
+    },
+    {
+      "Transaction Date": "2020-03-06",
+      "Transaction ID": "826863",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,880.11",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-02-27",
+      "Transaction ID": "3463779",
+      "Category": "Interest Credited",
+      "Amount": "$16.38",
+      "Balance": "$4,514.37",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$16.38"
+    },
+    {
+      "Transaction Date": "2020-02-27",
+      "Transaction ID": "827023",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,512.91",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-02-14",
+      "Transaction ID": "827091",
+      "Category": "Cash Withdrawal",
+      "Amount": "$390.00",
+      "Balance": "$4,497.99",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$390.00"
+    },
+    {
+      "Transaction Date": "2020-02-06",
+      "Transaction ID": "826862",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,887.99",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-01-30",
+      "Transaction ID": "827022",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$3,520.79",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2020-01-30",
+      "Transaction ID": "3463778",
+      "Category": "Interest Credited",
+      "Amount": "$18.07",
+      "Balance": "$3,522.25",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.07"
+    },
+    {
+      "Transaction Date": "2020-01-23",
+      "Transaction ID": "826962",
+      "Category": "Cash Withdrawal",
+      "Amount": "$410.00",
+      "Balance": "$3,504.18",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$410.00"
+    },
+    {
+      "Transaction Date": "2020-01-18",
+      "Transaction ID": "826929",
+      "Category": "Cash Withdrawal",
+      "Amount": "$250.00",
+      "Balance": "$3,914.18",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$250.00"
+    },
+    {
+      "Transaction Date": "2020-01-15",
+      "Transaction ID": "826895",
+      "Category": "Cash Withdrawal",
+      "Amount": "$780.00",
+      "Balance": "$4,164.18",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$780.00"
+    },
+    {
+      "Transaction Date": "2020-01-15",
+      "Transaction ID": "827090",
+      "Category": "Cash Withdrawal",
+      "Amount": "$310.00",
+      "Balance": "$4,944.18",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$310.00"
+    },
+    {
+      "Transaction Date": "2020-01-13",
+      "Transaction ID": "826928",
+      "Category": "Cash Withdrawal",
+      "Amount": "$170.00",
+      "Balance": "$5,254.18",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$170.00"
+    },
+    {
+      "Transaction Date": "2020-01-12",
+      "Transaction ID": "826931",
+      "Category": "Cash Withdrawal",
+      "Amount": "$240.00",
+      "Balance": "$5,424.18",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$240.00"
+    },
+    {
+      "Transaction Date": "2020-01-06",
+      "Transaction ID": "826861",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,664.18",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2020-01-05",
+      "Transaction ID": "826932",
+      "Category": "Cash Withdrawal",
+      "Amount": "$80.00",
+      "Balance": "$4,296.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$80.00"
+    },
+    {
+      "Transaction Date": "2020-01-02",
+      "Transaction ID": "826930",
+      "Category": "Cash Withdrawal",
+      "Amount": "$120.00",
+      "Balance": "$4,376.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$120.00"
+    },
+    {
+      "Transaction Date": "2019-12-31",
+      "Transaction ID": "826927",
+      "Category": "Cash Withdrawal",
+      "Amount": "$150.00",
+      "Balance": "$4,496.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$150.00"
+    },
+    {
+      "Transaction Date": "2019-12-30",
+      "Transaction ID": "3463777",
+      "Category": "Interest Credited",
+      "Amount": "$19.88",
+      "Balance": "$4,648.44",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$19.88"
+    },
+    {
+      "Transaction Date": "2019-12-30",
+      "Transaction ID": "827021",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,646.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-12-29",
+      "Transaction ID": "826959",
+      "Category": "Cash Withdrawal",
+      "Amount": "$460.00",
+      "Balance": "$4,628.56",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$460.00"
+    },
+    {
+      "Transaction Date": "2019-12-24",
+      "Transaction ID": "826900",
+      "Category": "Cash Withdrawal",
+      "Amount": "$100.00",
+      "Balance": "$5,088.56",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$100.00"
+    },
+    {
+      "Transaction Date": "2019-12-16",
+      "Transaction ID": "827089",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,480.00",
+      "Balance": "$5,188.56",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,480.00"
+    },
+    {
+      "Transaction Date": "2019-12-06",
+      "Transaction ID": "826860",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$6,668.56",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2019-11-29",
+      "Transaction ID": "827020",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,617.76",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-11-29",
+      "Transaction ID": "3463776",
+      "Category": "Interest Credited",
+      "Amount": "$18.43",
+      "Balance": "$4,619.22",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.43"
+    },
+    {
+      "Transaction Date": "2019-11-16",
+      "Transaction ID": "827088",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,160.00",
+      "Balance": "$4,600.79",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,160.00"
+    },
+    {
+      "Transaction Date": "2019-11-06",
+      "Transaction ID": "826859",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,760.79",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-10-30",
+      "Transaction ID": "3463775",
+      "Category": "Interest Credited",
+      "Amount": "$18.54",
+      "Balance": "$4,395.05",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.54"
+    },
+    {
+      "Transaction Date": "2019-10-30",
+      "Transaction ID": "827019",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,393.59",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-10-17",
+      "Transaction ID": "827087",
+      "Category": "Cash Withdrawal",
+      "Amount": "$920.00",
+      "Balance": "$4,376.52",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$920.00"
+    },
+    {
+      "Transaction Date": "2019-10-13",
+      "Transaction ID": "826958",
+      "Category": "Cash Withdrawal",
+      "Amount": "$490.00",
+      "Balance": "$5,296.52",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$490.00"
+    },
+    {
+      "Transaction Date": "2019-10-06",
+      "Transaction ID": "826858",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,786.52",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-09-29",
+      "Transaction ID": "827018",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,419.32",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-09-29",
+      "Transaction ID": "3463774",
+      "Category": "Interest Credited",
+      "Amount": "$18.12",
+      "Balance": "$4,420.78",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.12"
+    },
+    {
+      "Transaction Date": "2019-09-17",
+      "Transaction ID": "827086",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,380.00",
+      "Balance": "$4,402.66",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,380.00"
+    },
+    {
+      "Transaction Date": "2019-09-06",
+      "Transaction ID": "826857",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,782.66",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-08-30",
+      "Transaction ID": "827017",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,415.46",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-08-30",
+      "Transaction ID": "3463773",
+      "Category": "Interest Credited",
+      "Amount": "$18.28",
+      "Balance": "$4,416.92",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.28"
+    },
+    {
+      "Transaction Date": "2019-08-18",
+      "Transaction ID": "827085",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,450.00",
+      "Balance": "$4,398.64",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,450.00"
+    },
+    {
+      "Transaction Date": "2019-08-06",
+      "Transaction ID": "826856",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,848.64",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-07-30",
+      "Transaction ID": "3463772",
+      "Category": "Interest Credited",
+      "Amount": "$20.52",
+      "Balance": "$4,482.90",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.52"
+    },
+    {
+      "Transaction Date": "2019-07-30",
+      "Transaction ID": "827016",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,481.44",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-07-19",
+      "Transaction ID": "827084",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,320.00",
+      "Balance": "$4,462.37",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,320.00"
+    },
+    {
+      "Transaction Date": "2019-07-08",
+      "Transaction ID": "826956",
+      "Category": "Cash Withdrawal",
+      "Amount": "$240.00",
+      "Balance": "$5,782.37",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$240.00"
+    },
+    {
+      "Transaction Date": "2019-07-06",
+      "Transaction ID": "826855",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,022.37",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-06-29",
+      "Transaction ID": "827015",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,655.17",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-06-29",
+      "Transaction ID": "3463771",
+      "Category": "Interest Credited",
+      "Amount": "$21.01",
+      "Balance": "$4,656.63",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.01"
+    },
+    {
+      "Transaction Date": "2019-06-19",
+      "Transaction ID": "827083",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,070.00",
+      "Balance": "$4,635.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,070.00"
+    },
+    {
+      "Transaction Date": "2019-06-06",
+      "Transaction ID": "826854",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$5,705.62",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2019-06-03",
+      "Transaction ID": "826888",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,770.00",
+      "Balance": "$3,654.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,770.00"
+    },
+    {
+      "Transaction Date": "2019-05-31",
+      "Transaction ID": "826955",
+      "Category": "Cash Withdrawal",
+      "Amount": "$150.00",
+      "Balance": "$5,424.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$150.00"
+    },
+    {
+      "Transaction Date": "2019-05-30",
+      "Transaction ID": "827014",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,574.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-05-30",
+      "Transaction ID": "3463770",
+      "Category": "Interest Credited",
+      "Amount": "$22.71",
+      "Balance": "$5,576.28",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.71"
+    },
+    {
+      "Transaction Date": "2019-05-27",
+      "Transaction ID": "826961",
+      "Category": "Cash Withdrawal",
+      "Amount": "$60.00",
+      "Balance": "$5,553.58",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$60.00"
+    },
+    {
+      "Transaction Date": "2019-05-20",
+      "Transaction ID": "827082",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,020.00",
+      "Balance": "$5,613.58",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,020.00"
+    },
+    {
+      "Transaction Date": "2019-05-19",
+      "Transaction ID": "826960",
+      "Category": "Cash Withdrawal",
+      "Amount": "$120.00",
+      "Balance": "$6,633.58",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$120.00"
+    },
+    {
+      "Transaction Date": "2019-05-06",
+      "Transaction ID": "826853",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,753.58",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-04-29",
+      "Transaction ID": "3463769",
+      "Category": "Interest Credited",
+      "Amount": "$21.95",
+      "Balance": "$5,387.84",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.95"
+    },
+    {
+      "Transaction Date": "2019-04-29",
+      "Transaction ID": "827013",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,386.38",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-04-20",
+      "Transaction ID": "827081",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,290.00",
+      "Balance": "$5,365.89",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,290.00"
+    },
+    {
+      "Transaction Date": "2019-04-06",
+      "Transaction ID": "826852",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,655.89",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-03-30",
+      "Transaction ID": "827012",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,288.69",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-03-30",
+      "Transaction ID": "3463768",
+      "Category": "Interest Credited",
+      "Amount": "$20.93",
+      "Balance": "$5,290.15",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.93"
+    },
+    {
+      "Transaction Date": "2019-03-21",
+      "Transaction ID": "827080",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,070.00",
+      "Balance": "$5,269.22",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,070.00"
+    },
+    {
+      "Transaction Date": "2019-03-06",
+      "Transaction ID": "826851",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,339.22",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-02-27",
+      "Transaction ID": "3463767",
+      "Category": "Interest Credited",
+      "Amount": "$19.50",
+      "Balance": "$4,973.48",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$19.50"
+    },
+    {
+      "Transaction Date": "2019-02-27",
+      "Transaction ID": "827011",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,972.02",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-02-20",
+      "Transaction ID": "827079",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,030.00",
+      "Balance": "$4,953.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,030.00"
+    },
+    {
+      "Transaction Date": "2019-02-06",
+      "Transaction ID": "826850",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,983.98",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-01-30",
+      "Transaction ID": "3463766",
+      "Category": "Interest Credited",
+      "Amount": "$23.53",
+      "Balance": "$4,618.24",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$23.53"
+    },
+    {
+      "Transaction Date": "2019-01-30",
+      "Transaction ID": "827010",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,616.78",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2019-01-24",
+      "Transaction ID": "826922",
+      "Category": "Cash Withdrawal",
+      "Amount": "$210.00",
+      "Balance": "$4,594.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$210.00"
+    },
+    {
+      "Transaction Date": "2019-01-21",
+      "Transaction ID": "827078",
+      "Category": "Cash Withdrawal",
+      "Amount": "$780.00",
+      "Balance": "$4,804.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$780.00"
+    },
+    {
+      "Transaction Date": "2019-01-20",
+      "Transaction ID": "826924",
+      "Category": "Cash Withdrawal",
+      "Amount": "$220.00",
+      "Balance": "$5,794.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$220.00"
+    },
+    {
+      "Transaction Date": "2019-01-20",
+      "Transaction ID": "826894",
+      "Category": "Cash Withdrawal",
+      "Amount": "$210.00",
+      "Balance": "$5,584.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$210.00"
+    },
+    {
+      "Transaction Date": "2019-01-17",
+      "Transaction ID": "826925",
+      "Category": "Cash Withdrawal",
+      "Amount": "$220.00",
+      "Balance": "$6,014.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$220.00"
+    },
+    {
+      "Transaction Date": "2019-01-16",
+      "Transaction ID": "826921",
+      "Category": "Cash Withdrawal",
+      "Amount": "$250.00",
+      "Balance": "$6,234.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$250.00"
+    },
+    {
+      "Transaction Date": "2019-01-15",
+      "Transaction ID": "826926",
+      "Category": "Cash Withdrawal",
+      "Amount": "$100.00",
+      "Balance": "$6,484.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$100.00"
+    },
+    {
+      "Transaction Date": "2019-01-07",
+      "Transaction ID": "826957",
+      "Category": "Cash Withdrawal",
+      "Amount": "$290.00",
+      "Balance": "$6,584.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$290.00"
+    },
+    {
+      "Transaction Date": "2019-01-06",
+      "Transaction ID": "826849",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,964.71",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2019-01-06",
+      "Transaction ID": "826923",
+      "Category": "Cash Withdrawal",
+      "Amount": "$90.00",
+      "Balance": "$6,874.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$90.00"
+    },
+    {
+      "Transaction Date": "2018-12-30",
+      "Transaction ID": "3463765",
+      "Category": "Interest Credited",
+      "Amount": "$22.03",
+      "Balance": "$5,598.97",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.03"
+    },
+    {
+      "Transaction Date": "2018-12-30",
+      "Transaction ID": "827009",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,597.51",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-12-24",
+      "Transaction ID": "826899",
+      "Category": "Cash Withdrawal",
+      "Amount": "$60.00",
+      "Balance": "$5,576.93",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$60.00"
+    },
+    {
+      "Transaction Date": "2018-12-22",
+      "Transaction ID": "827077",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,630.00",
+      "Balance": "$5,636.93",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,630.00"
+    },
+    {
+      "Transaction Date": "2018-12-06",
+      "Transaction ID": "826848",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$7,266.93",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2018-11-29",
+      "Transaction ID": "827008",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,216.13",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-11-29",
+      "Transaction ID": "3463764",
+      "Category": "Interest Credited",
+      "Amount": "$21.88",
+      "Balance": "$5,217.59",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.88"
+    },
+    {
+      "Transaction Date": "2018-11-22",
+      "Transaction ID": "826954",
+      "Category": "Cash Withdrawal",
+      "Amount": "$300.00",
+      "Balance": "$5,195.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$300.00"
+    },
+    {
+      "Transaction Date": "2018-11-22",
+      "Transaction ID": "827076",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,190.00",
+      "Balance": "$5,495.71",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,190.00"
+    },
+    {
+      "Transaction Date": "2018-11-06",
+      "Transaction ID": "826847",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,685.71",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-10-30",
+      "Transaction ID": "827007",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,318.51",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-10-30",
+      "Transaction ID": "3463763",
+      "Category": "Interest Credited",
+      "Amount": "$21.49",
+      "Balance": "$5,319.97",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.49"
+    },
+    {
+      "Transaction Date": "2018-10-23",
+      "Transaction ID": "827075",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,220.00",
+      "Balance": "$5,298.48",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,220.00"
+    },
+    {
+      "Transaction Date": "2018-10-06",
+      "Transaction ID": "826846",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,518.48",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-09-29",
+      "Transaction ID": "3463762",
+      "Category": "Interest Credited",
+      "Amount": "$21.55",
+      "Balance": "$5,152.74",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.55"
+    },
+    {
+      "Transaction Date": "2018-09-29",
+      "Transaction ID": "827006",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,151.28",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-09-23",
+      "Transaction ID": "827074",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,460.00",
+      "Balance": "$5,131.19",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,460.00"
+    },
+    {
+      "Transaction Date": "2018-09-06",
+      "Transaction ID": "826845",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,591.19",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-08-30",
+      "Transaction ID": "3463761",
+      "Category": "Interest Credited",
+      "Amount": "$20.81",
+      "Balance": "$5,225.45",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.81"
+    },
+    {
+      "Transaction Date": "2018-08-30",
+      "Transaction ID": "827005",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,223.99",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-08-24",
+      "Transaction ID": "827073",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,130.00",
+      "Balance": "$5,204.65",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,130.00"
+    },
+    {
+      "Transaction Date": "2018-08-06",
+      "Transaction ID": "826844",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,334.65",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-07-30",
+      "Transaction ID": "827004",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,967.45",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-07-30",
+      "Transaction ID": "3463760",
+      "Category": "Interest Credited",
+      "Amount": "$18.58",
+      "Balance": "$4,968.91",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.58"
+    },
+    {
+      "Transaction Date": "2018-07-25",
+      "Transaction ID": "827072",
+      "Category": "Cash Withdrawal",
+      "Amount": "$790.00",
+      "Balance": "$4,950.33",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$790.00"
+    },
+    {
+      "Transaction Date": "2018-07-06",
+      "Transaction ID": "826843",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,740.33",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-06-29",
+      "Transaction ID": "3463759",
+      "Category": "Interest Credited",
+      "Amount": "$23.01",
+      "Balance": "$4,374.59",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$23.01"
+    },
+    {
+      "Transaction Date": "2018-06-29",
+      "Transaction ID": "827003",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,373.13",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-06-27",
+      "Transaction ID": "826949",
+      "Category": "Cash Withdrawal",
+      "Amount": "$460.00",
+      "Balance": "$4,351.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$460.00"
+    },
+    {
+      "Transaction Date": "2018-06-26",
+      "Transaction ID": "826953",
+      "Category": "Cash Withdrawal",
+      "Amount": "$110.00",
+      "Balance": "$4,811.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$110.00"
+    },
+    {
+      "Transaction Date": "2018-06-25",
+      "Transaction ID": "827071",
+      "Category": "Cash Withdrawal",
+      "Amount": "$790.00",
+      "Balance": "$4,921.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$790.00"
+    },
+    {
+      "Transaction Date": "2018-06-12",
+      "Transaction ID": "826887",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,030.00",
+      "Balance": "$5,711.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,030.00"
+    },
+    {
+      "Transaction Date": "2018-06-06",
+      "Transaction ID": "826842",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$6,741.57",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2018-06-01",
+      "Transaction ID": "826952",
+      "Category": "Cash Withdrawal",
+      "Amount": "$130.00",
+      "Balance": "$4,690.77",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$130.00"
+    },
+    {
+      "Transaction Date": "2018-05-30",
+      "Transaction ID": "3463758",
+      "Category": "Interest Credited",
+      "Amount": "$18.26",
+      "Balance": "$4,822.23",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.26"
+    },
+    {
+      "Transaction Date": "2018-05-30",
+      "Transaction ID": "827002",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,820.77",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-05-26",
+      "Transaction ID": "827070",
+      "Category": "Cash Withdrawal",
+      "Amount": "$890.00",
+      "Balance": "$4,803.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$890.00"
+    },
+    {
+      "Transaction Date": "2018-05-06",
+      "Transaction ID": "826841",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,693.98",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-04-29",
+      "Transaction ID": "827001",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,326.78",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-04-29",
+      "Transaction ID": "3463757",
+      "Category": "Interest Credited",
+      "Amount": "$21.06",
+      "Balance": "$4,328.24",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.06"
+    },
+    {
+      "Transaction Date": "2018-04-26",
+      "Transaction ID": "827069",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,130.00",
+      "Balance": "$4,307.17",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,130.00"
+    },
+    {
+      "Transaction Date": "2018-04-06",
+      "Transaction ID": "826840",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,437.17",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-04-01",
+      "Transaction ID": "826951",
+      "Category": "Cash Withdrawal",
+      "Amount": "$310.00",
+      "Balance": "$4,069.97",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$310.00"
+    },
+    {
+      "Transaction Date": "2018-03-30",
+      "Transaction ID": "3463756",
+      "Category": "Interest Credited",
+      "Amount": "$17.32",
+      "Balance": "$4,381.43",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$17.32"
+    },
+    {
+      "Transaction Date": "2018-03-30",
+      "Transaction ID": "827000",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,379.97",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-03-27",
+      "Transaction ID": "827068",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,150.00",
+      "Balance": "$4,364.12",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,150.00"
+    },
+    {
+      "Transaction Date": "2018-03-06",
+      "Transaction ID": "826839",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,514.12",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-02-27",
+      "Transaction ID": "826999",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,146.92",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-02-27",
+      "Transaction ID": "3463755",
+      "Category": "Interest Credited",
+      "Amount": "$16.11",
+      "Balance": "$4,148.38",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$16.11"
+    },
+    {
+      "Transaction Date": "2018-02-25",
+      "Transaction ID": "827067",
+      "Category": "Cash Withdrawal",
+      "Amount": "$320.00",
+      "Balance": "$4,132.26",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$320.00"
+    },
+    {
+      "Transaction Date": "2018-02-15",
+      "Transaction ID": "826950",
+      "Category": "Cash Withdrawal",
+      "Amount": "$370.00",
+      "Balance": "$4,452.26",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$370.00"
+    },
+    {
+      "Transaction Date": "2018-02-06",
+      "Transaction ID": "826838",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,822.26",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2018-01-30",
+      "Transaction ID": "3463754",
+      "Category": "Interest Credited",
+      "Amount": "$22.18",
+      "Balance": "$3,456.52",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.18"
+    },
+    {
+      "Transaction Date": "2018-01-30",
+      "Transaction ID": "826998",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$3,455.06",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2018-01-29",
+      "Transaction ID": "826920",
+      "Category": "Cash Withdrawal",
+      "Amount": "$130.00",
+      "Balance": "$3,434.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$130.00"
+    },
+    {
+      "Transaction Date": "2018-01-29",
+      "Transaction ID": "826915",
+      "Category": "Cash Withdrawal",
+      "Amount": "$140.00",
+      "Balance": "$3,564.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$140.00"
+    },
+    {
+      "Transaction Date": "2018-01-28",
+      "Transaction ID": "826893",
+      "Category": "Cash Withdrawal",
+      "Amount": "$940.00",
+      "Balance": "$3,704.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$940.00"
+    },
+    {
+      "Transaction Date": "2018-01-26",
+      "Transaction ID": "827066",
+      "Category": "Cash Withdrawal",
+      "Amount": "$880.00",
+      "Balance": "$4,644.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$880.00"
+    },
+    {
+      "Transaction Date": "2018-01-18",
+      "Transaction ID": "826916",
+      "Category": "Cash Withdrawal",
+      "Amount": "$150.00",
+      "Balance": "$5,524.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$150.00"
+    },
+    {
+      "Transaction Date": "2018-01-12",
+      "Transaction ID": "826918",
+      "Category": "Cash Withdrawal",
+      "Amount": "$290.00",
+      "Balance": "$5,674.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$290.00"
+    },
+    {
+      "Transaction Date": "2018-01-11",
+      "Transaction ID": "826919",
+      "Category": "Cash Withdrawal",
+      "Amount": "$90.00",
+      "Balance": "$5,964.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$90.00"
+    },
+    {
+      "Transaction Date": "2018-01-06",
+      "Transaction ID": "826917",
+      "Category": "Cash Withdrawal",
+      "Amount": "$260.00",
+      "Balance": "$6,054.35",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$260.00"
+    },
+    {
+      "Transaction Date": "2018-01-06",
+      "Transaction ID": "826837",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$6,314.35",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-12-30",
+      "Transaction ID": "3463753",
+      "Category": "Interest Credited",
+      "Amount": "$20.80",
+      "Balance": "$4,948.61",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.80"
+    },
+    {
+      "Transaction Date": "2017-12-30",
+      "Transaction ID": "826997",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,947.15",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-12-27",
+      "Transaction ID": "827065",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,370.00",
+      "Balance": "$4,927.81",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,370.00"
+    },
+    {
+      "Transaction Date": "2017-12-19",
+      "Transaction ID": "826898",
+      "Category": "Cash Withdrawal",
+      "Amount": "$230.00",
+      "Balance": "$6,297.81",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$230.00"
+    },
+    {
+      "Transaction Date": "2017-12-06",
+      "Transaction ID": "826836",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$6,527.81",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2017-11-29",
+      "Transaction ID": "826996",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,477.01",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-11-29",
+      "Transaction ID": "3463752",
+      "Category": "Interest Credited",
+      "Amount": "$21.74",
+      "Balance": "$4,478.47",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.74"
+    },
+    {
+      "Transaction Date": "2017-11-27",
+      "Transaction ID": "827064",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,150.00",
+      "Balance": "$4,456.74",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,150.00"
+    },
+    {
+      "Transaction Date": "2017-11-08",
+      "Transaction ID": "826945",
+      "Category": "Cash Withdrawal",
+      "Amount": "$380.00",
+      "Balance": "$5,606.74",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$380.00"
+    },
+    {
+      "Transaction Date": "2017-11-06",
+      "Transaction ID": "826835",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,986.74",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-10-30",
+      "Transaction ID": "826995",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,619.54",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-10-30",
+      "Transaction ID": "3463751",
+      "Category": "Interest Credited",
+      "Amount": "$19.39",
+      "Balance": "$4,621.00",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$19.39"
+    },
+    {
+      "Transaction Date": "2017-10-28",
+      "Transaction ID": "827063",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,070.00",
+      "Balance": "$4,601.60",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,070.00"
+    },
+    {
+      "Transaction Date": "2017-10-23",
+      "Transaction ID": "826946",
+      "Category": "Cash Withdrawal",
+      "Amount": "$150.00",
+      "Balance": "$5,671.60",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$150.00"
+    },
+    {
+      "Transaction Date": "2017-10-06",
+      "Transaction ID": "826834",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,821.60",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-09-29",
+      "Transaction ID": "826994",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,454.40",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-09-29",
+      "Transaction ID": "3463750",
+      "Category": "Interest Credited",
+      "Amount": "$16.60",
+      "Balance": "$4,455.86",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$16.60"
+    },
+    {
+      "Transaction Date": "2017-09-28",
+      "Transaction ID": "827062",
+      "Category": "Cash Withdrawal",
+      "Amount": "$890.00",
+      "Balance": "$4,439.26",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$890.00"
+    },
+    {
+      "Transaction Date": "2017-09-06",
+      "Transaction ID": "826833",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,329.26",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-08-30",
+      "Transaction ID": "826993",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$3,962.06",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-08-30",
+      "Transaction ID": "3463749",
+      "Category": "Interest Credited",
+      "Amount": "$18.57",
+      "Balance": "$3,963.52",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.57"
+    },
+    {
+      "Transaction Date": "2017-08-29",
+      "Transaction ID": "827061",
+      "Category": "Cash Withdrawal",
+      "Amount": "$890.00",
+      "Balance": "$3,944.95",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$890.00"
+    },
+    {
+      "Transaction Date": "2017-08-10",
+      "Transaction ID": "826947",
+      "Category": "Cash Withdrawal",
+      "Amount": "$400.00",
+      "Balance": "$4,834.95",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$400.00"
+    },
+    {
+      "Transaction Date": "2017-08-06",
+      "Transaction ID": "826832",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,234.95",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-07-30",
+      "Transaction ID": "826992",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$3,867.75",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-07-30",
+      "Transaction ID": "3463748",
+      "Category": "Interest Credited",
+      "Amount": "$19.92",
+      "Balance": "$4,999.21",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$19.92"
+    },
+    {
+      "Transaction Date": "2017-07-30",
+      "Transaction ID": "827060",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,130.00",
+      "Balance": "$3,869.21",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,130.00"
+    },
+    {
+      "Transaction Date": "2017-07-06",
+      "Transaction ID": "826831",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,979.29",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-06-30",
+      "Transaction ID": "827059",
+      "Category": "Cash Withdrawal",
+      "Amount": "$570.00",
+      "Balance": "$3,612.09",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$570.00"
+    },
+    {
+      "Transaction Date": "2017-06-29",
+      "Transaction ID": "826991",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,182.09",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-06-29",
+      "Transaction ID": "3463747",
+      "Category": "Interest Credited",
+      "Amount": "$20.38",
+      "Balance": "$4,183.55",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.38"
+    },
+    {
+      "Transaction Date": "2017-06-13",
+      "Transaction ID": "826886",
+      "Category": "Cash Withdrawal",
+      "Amount": "$2,080.00",
+      "Balance": "$4,163.16",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$2,080.00"
+    },
+    {
+      "Transaction Date": "2017-06-06",
+      "Transaction ID": "826830",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$6,243.16",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2017-05-31",
+      "Transaction ID": "827058",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,220.00",
+      "Balance": "$4,192.36",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,220.00"
+    },
+    {
+      "Transaction Date": "2017-05-30",
+      "Transaction ID": "3463746",
+      "Category": "Interest Credited",
+      "Amount": "$22.05",
+      "Balance": "$5,413.82",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.05"
+    },
+    {
+      "Transaction Date": "2017-05-30",
+      "Transaction ID": "826990",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,412.36",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-05-06",
+      "Transaction ID": "826829",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,391.77",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-05-01",
+      "Transaction ID": "827057",
+      "Category": "Cash Withdrawal",
+      "Amount": "$880.00",
+      "Balance": "$4,024.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$880.00"
+    },
+    {
+      "Transaction Date": "2017-04-29",
+      "Transaction ID": "826989",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,904.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-04-29",
+      "Transaction ID": "3463745",
+      "Category": "Interest Credited",
+      "Amount": "$20.21",
+      "Balance": "$4,906.03",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.21"
+    },
+    {
+      "Transaction Date": "2017-04-06",
+      "Transaction ID": "826828",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,885.82",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-04-01",
+      "Transaction ID": "827056",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,210.00",
+      "Balance": "$3,518.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,210.00"
+    },
+    {
+      "Transaction Date": "2017-03-30",
+      "Transaction ID": "3463744",
+      "Category": "Interest Credited",
+      "Amount": "$19.80",
+      "Balance": "$4,730.08",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$19.80"
+    },
+    {
+      "Transaction Date": "2017-03-30",
+      "Transaction ID": "826988",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,728.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-03-16",
+      "Transaction ID": "826948",
+      "Category": "Cash Withdrawal",
+      "Amount": "$200.00",
+      "Balance": "$4,710.28",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$200.00"
+    },
+    {
+      "Transaction Date": "2017-03-06",
+      "Transaction ID": "826827",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,910.28",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-03-02",
+      "Transaction ID": "827055",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,070.00",
+      "Balance": "$3,543.08",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,070.00"
+    },
+    {
+      "Transaction Date": "2017-02-27",
+      "Transaction ID": "826987",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,613.08",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-02-27",
+      "Transaction ID": "3463743",
+      "Category": "Interest Credited",
+      "Amount": "$18.37",
+      "Balance": "$4,614.54",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.37"
+    },
+    {
+      "Transaction Date": "2017-02-06",
+      "Transaction ID": "826826",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,596.18",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-01-31",
+      "Transaction ID": "827054",
+      "Category": "Cash Withdrawal",
+      "Amount": "$500.00",
+      "Balance": "$3,228.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$500.00"
+    },
+    {
+      "Transaction Date": "2017-01-30",
+      "Transaction ID": "826986",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$3,728.98",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2017-01-30",
+      "Transaction ID": "3463742",
+      "Category": "Interest Credited",
+      "Amount": "$17.62",
+      "Balance": "$3,730.44",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$17.62"
+    },
+    {
+      "Transaction Date": "2017-01-24",
+      "Transaction ID": "826914",
+      "Category": "Cash Withdrawal",
+      "Amount": "$260.00",
+      "Balance": "$3,712.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$260.00"
+    },
+    {
+      "Transaction Date": "2017-01-20",
+      "Transaction ID": "826912",
+      "Category": "Cash Withdrawal",
+      "Amount": "$70.00",
+      "Balance": "$3,972.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$70.00"
+    },
+    {
+      "Transaction Date": "2017-01-14",
+      "Transaction ID": "826909",
+      "Category": "Cash Withdrawal",
+      "Amount": "$270.00",
+      "Balance": "$4,042.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$270.00"
+    },
+    {
+      "Transaction Date": "2017-01-07",
+      "Transaction ID": "826892",
+      "Category": "Cash Withdrawal",
+      "Amount": "$620.00",
+      "Balance": "$4,732.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$620.00"
+    },
+    {
+      "Transaction Date": "2017-01-07",
+      "Transaction ID": "826944",
+      "Category": "Cash Withdrawal",
+      "Amount": "$420.00",
+      "Balance": "$4,312.82",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$420.00"
+    },
+    {
+      "Transaction Date": "2017-01-06",
+      "Transaction ID": "826825",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,352.82",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2017-01-05",
+      "Transaction ID": "826913",
+      "Category": "Cash Withdrawal",
+      "Amount": "$60.00",
+      "Balance": "$3,985.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$60.00"
+    },
+    {
+      "Transaction Date": "2017-01-04",
+      "Transaction ID": "826911",
+      "Category": "Cash Withdrawal",
+      "Amount": "$110.00",
+      "Balance": "$4,045.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$110.00"
+    },
+    {
+      "Transaction Date": "2017-01-01",
+      "Transaction ID": "826910",
+      "Category": "Cash Withdrawal",
+      "Amount": "$240.00",
+      "Balance": "$5,295.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$240.00"
+    },
+    {
+      "Transaction Date": "2017-01-01",
+      "Transaction ID": "827053",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,140.00",
+      "Balance": "$4,155.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,140.00"
+    },
+    {
+      "Transaction Date": "2016-12-30",
+      "Transaction ID": "826985",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,535.62",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2016-12-30",
+      "Transaction ID": "3463741",
+      "Category": "Interest Credited",
+      "Amount": "$21.71",
+      "Balance": "$5,537.08",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.71"
+    },
+    {
+      "Transaction Date": "2016-12-06",
+      "Transaction ID": "826824",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$5,515.37",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2016-12-02",
+      "Transaction ID": "827052",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,370.00",
+      "Balance": "$3,464.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,370.00"
+    },
+    {
+      "Transaction Date": "2016-12-01",
+      "Transaction ID": "826897",
+      "Category": "Cash Withdrawal",
+      "Amount": "$60.00",
+      "Balance": "$4,834.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$60.00"
+    },
+    {
+      "Transaction Date": "2016-11-29",
+      "Transaction ID": "3463740",
+      "Category": "Interest Credited",
+      "Amount": "$20.60",
+      "Balance": "$4,896.03",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.60"
+    },
+    {
+      "Transaction Date": "2016-11-29",
+      "Transaction ID": "826984",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$4,894.57",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2016-11-08",
+      "Transaction ID": "826941",
+      "Category": "Cash Withdrawal",
+      "Amount": "$330.00",
+      "Balance": "$4,875.43",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$330.00"
+    },
+    {
+      "Transaction Date": "2016-11-07",
+      "Transaction ID": "826939",
+      "Category": "Cash Withdrawal",
+      "Amount": "$100.00",
+      "Balance": "$5,205.43",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$100.00"
+    },
+    {
+      "Transaction Date": "2016-11-06",
+      "Transaction ID": "826823",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,305.43",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2016-11-02",
+      "Transaction ID": "827051",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,160.00",
+      "Balance": "$3,938.23",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,160.00"
+    },
+    {
+      "Transaction Date": "2016-10-30",
+      "Transaction ID": "826983",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,098.23",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2016-10-30",
+      "Transaction ID": "3463739",
+      "Category": "Interest Credited",
+      "Amount": "$21.37",
+      "Balance": "$5,099.69",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.37"
+    },
+    {
+      "Transaction Date": "2016-10-06",
+      "Transaction ID": "826822",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,078.32",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2016-10-03",
+      "Transaction ID": "827050",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,630.00",
+      "Balance": "$3,711.12",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,630.00"
+    },
+    {
+      "Transaction Date": "2016-09-29",
+      "Transaction ID": "826982",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,341.12",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2016-09-29",
+      "Transaction ID": "3463738",
+      "Category": "Interest Credited",
+      "Amount": "$22.15",
+      "Balance": "$5,342.58",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$22.15"
+    },
+    {
+      "Transaction Date": "2016-09-06",
+      "Transaction ID": "826821",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,320.43",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2016-09-03",
+      "Transaction ID": "827049",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,340.00",
+      "Balance": "$3,953.23",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,340.00"
+    },
+    {
+      "Transaction Date": "2016-08-30",
+      "Transaction ID": "826981",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1.46",
+      "Balance": "$5,293.23",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1.46"
+    },
+    {
+      "Transaction Date": "2016-08-30",
+      "Transaction ID": "3463737",
+      "Category": "Interest Credited",
+      "Amount": "$21.62",
+      "Balance": "$5,294.69",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$21.62"
+    },
+    {
+      "Transaction Date": "2016-08-06",
+      "Transaction ID": "826820",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$5,273.07",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2016-08-04",
+      "Transaction ID": "827048",
+      "Category": "Cash Withdrawal",
+      "Amount": "$950.00",
+      "Balance": "$3,905.87",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$950.00"
+    },
+    {
+      "Transaction Date": "2016-07-30",
+      "Transaction ID": "3463736",
+      "Category": "Interest Credited",
+      "Amount": "$20.16",
+      "Balance": "$4,855.87",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.16"
+    },
+    {
+      "Transaction Date": "2016-07-06",
+      "Transaction ID": "826819",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$4,835.71",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2016-07-05",
+      "Transaction ID": "827047",
+      "Category": "Cash Withdrawal",
+      "Amount": "$1,400.00",
+      "Balance": "$3,468.51",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$1,400.00"
+    },
+    {
+      "Transaction Date": "2016-06-29",
+      "Transaction ID": "3463735",
+      "Category": "Interest Credited",
+      "Amount": "$18.45",
+      "Balance": "$4,868.51",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$18.45"
+    },
+    {
+      "Transaction Date": "2016-06-06",
+      "Transaction ID": "826818",
+      "Category": "Credit in Cash",
+      "Amount": "$2,050.80",
+      "Balance": "$4,850.06",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$2,050.80"
+    },
+    {
+      "Transaction Date": "2016-06-05",
+      "Transaction ID": "827046",
+      "Category": "Credit in Cash",
+      "Amount": "$50.00",
+      "Balance": "$2,799.26",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$50.00"
+    },
+    {
+      "Transaction Date": "2016-05-30",
+      "Transaction ID": "3463734",
+      "Category": "Interest Credited",
+      "Amount": "$10.31",
+      "Balance": "$2,749.26",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$10.31"
+    },
+    {
+      "Transaction Date": "2016-05-06",
+      "Transaction ID": "826817",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$2,758.96",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": "2016-05-06",
+      "Transaction ID": "827045",
+      "Category": "Cash Withdrawal",
+      "Amount": "$20.00",
+      "Balance": "$2,738.96",
+      "Type": "Debit",
+      "Client ID": "3404",
+      "Value": "$20.00"
+    },
+    {
+      "Transaction Date": "2016-04-29",
+      "Transaction ID": "3463733",
+      "Category": "Interest Credited",
+      "Amount": "$4.56",
+      "Balance": "$1,391.76",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$4.56"
+    },
+    {
+      "Transaction Date": "2016-04-06",
+      "Transaction ID": "826812",
+      "Category": "Credit in Cash",
+      "Amount": "$20.00",
+      "Balance": "$1,387.20",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$20.00"
+    },
+    {
+      "Transaction Date": "2016-04-06",
+      "Transaction ID": "826816",
+      "Category": "Credit in Cash",
+      "Amount": "$1,367.20",
+      "Balance": "$1,367.20",
+      "Type": "Credit",
+      "Client ID": "3404",
+      "Value": "$1,367.20"
+    },
+    {
+      "Transaction Date": null,
+      "Transaction ID": null,
+      "Category": null,
+      "Amount": null,
+      "Balance": null,
+      "Type": null,
+      "Client ID": null,
+      "Value": "$171,683.06"
+    }
+  ])
+}
+
+
+
+function insertData(documentId, name, email, timeframe, lines) {
+  var currentdate = new Date(); 
+  var date_time = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+  var body = DocumentApp.openById(documentId).getBody();
+  body.replaceText('#{Name}', name);  
+  body.replaceText('#{Email}', email);  
+  body.replaceText('#{Time}', date_time);  
+  body.replaceText('#{Timeframe}', timeframe);
+
+  Logger.log("START lines="+lines);
+  var placeholder = findPlaceholder(body, '#{TransactionDate}');
+  Logger.log("res="+placeholder);  
+  var table = findContainingTable(placeholder);
+  Logger.log("table="+table);  
+
+  var totalAmount = 0.0;
+  for (var i=lines.length;i>0;i--) {
+    var tableRow = findContainingTableRow(placeholder);
+    if (i!=1) {
+      Logger.log("inserting at "+(lines.length-i+1));  
+      tableRow = table.insertTableRow(lines.length-i+1, tableRow.copy());
+    }
+    var line = lines[lines.length - i];
+    tableRow.replaceText('#{TransactionDate}', line["Transaction Date"]); 
+    tableRow.replaceText('#{TransactionID}', line["Transaction ID"]); 
+    tableRow.replaceText('#{TransactionCategory}', line["Category"]);   
+    tableRow.replaceText('#{TransactionID}', line["Transaction ID"]); 
+    tableRow.replaceText('#{Amount}', line["Amount"]);
+    tableRow.replaceText('#{Balance}', line["Balance"]);
+    tableRow.replaceText('#{Type}', line["Type"]);
+    tableRow.replaceText('#{ClientID}', line["Client ID"]);
+    tableRow.replaceText('#{Value}', line["Value"]);
+    
+    totalAmount += parseFloat(line["Value"]);
+  }
+  body.replaceText('#{Total}', num2str(totalAmount));   
+  
+  
+}
