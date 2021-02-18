@@ -4,6 +4,12 @@ import os
 import datetime
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+from __future__ import print_function
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 
 app = Flask(__name__)
 
@@ -23,8 +29,7 @@ def action_list(request):
             "uses_oauth": True
             }
         ]
-        }
-
+  }
 	return form
 
 
@@ -58,6 +63,20 @@ def oauth_form(request):
     return oauth_return
 
 def oauth(request):
+
+
+
+  ### This is getting all the files where the parent folder id is 13ErW1EI9nPnQdcEWhVGWYAO0T7uyNs6Y
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/reidjohn/Downloads/sandbox-trials-ab300809ea88.json"
+drive_service = build('drive', 'v3')
+response = drive_service.files().list(q="'13ErW1EI9nPnQdcEWhVGWYAO0T7uyNs6Y' in parents", spaces='drive',fields='nextPageToken, files(id, name, mimeType)',supportsAllDrives=True,pageToken=page_token).execute()
+for file in response.get('files', []):
+  doc_type = str.split(file.get('mimeType'),".")[2].capitalize()
+  print(file.get('name') + ' (' + doc_type + ')')
+page_token = response.get('nextPageToken', None)
+if page_token is None:
+    break
+
 
 
 # def action_execute(request):
