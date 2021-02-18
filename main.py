@@ -1,64 +1,216 @@
 import json
-from googleapiclient.discovery import build
+# from googleapiclient.discovery import build
 import os
 import datetime
+from cryptography.fernet import Fernet
+import base64
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import urllib
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+import requests
+import logging
+from flask import Flask, redirect, request, make_response
+from google.cloud import secretmanager
+import google.cloud.logging
+# from requests_toolbelt.adapters import appengine
+
+# s = requests.Session()
+# s.mount('http://', appengine.AppEngineAdapter())
+# s.mount('https://', appengine.AppEngineAdapter())
+
 
 app = Flask(__name__)
+ACTION_HUB_BASE_URL='https://actionhub-server-dot-looker-private-demo.uc.r.appspot.com'
+ACTION_NAME='pixel_perfect'
+PROJECT_ID = "looker-private-demo"
+
+# Setup logging in google cloud
+client = google.cloud.logging.Client()
+client.get_default_handler()
+client.setup_logging()
 
 # This function lists all the action from the action server
-@app.route('/')
-def action_list(request):
-	form = {
+@app.route('/', methods=['POST'])
+def action_list():
+  logging.info('Inside the action_list: ')
+  list_ = {
         "label": "My Action Hub",
         "integrations": [
             {
-            "name": "pixel_perfect",
+            "name": ACTION_NAME,
             "label": "Create Pixel Perfect Document",
             "supported_action_types": ["query"],
             "supported_formats": ["inline_json"],
-            "url": "https://example.com/actions/my_action/execute",
-            "form_url":"https://us-central1-sandbox-trials.cloudfunctions.net/max-form-pixel-perfect",
+            "url": f'{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/execute',
+            "form_url": f'{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/form',
             "uses_oauth": True
             }
         ]
         }
-
-	return form
+  return list_
 
 
 # This function checks to see if a user is logged in using oauth, if they are then we reutn a form for the scheduler, otherwise return oauth_link 
-@app.route('/pixel_perfect/form')
-def oauth_form(request):
-  print(request)
-  access_token = ''
+@app.route(f'/actions/{ACTION_NAME}/form', methods=['POST'])
+def oauth_form():
+  logging.info('Inside the oauth_form')
+  logging.info('Body: %s', request.get_data())
+
   #state_url is a special one-time-use URL that sets a user’s state for a given action.
-  #state_url = request["state_url"]
-  #try and extract the access token from here
-  
+  data = json.loads(request.data.decode())['data']
+  state_url = data['state_url']
+  state_json = json.loads(data['state_json'])
+#   access_token
+# expires_in
+# refresh_token
+# scope
+# token_type
+# id_token
+# expires_at
+# redirect
+
+  logging.info('data %s',repr(data))
+  logging.info('data keys %s',repr(data.keys()))
+	  
   #figure out if the user is authenticated, if the user is authenticated then return the form
-  if access_token.length() > 0:
+  if 'access_token' in data['state_json']:
+    logging.info('state tokens exist, returning form')
     #make an API call back to GDrive to find all the templates in X folder
+    options = [{"name":"Invoice"}]
     #return form for user in the scheduler
     form = json.dumps({"fields":[
       {"name": "name", "label": "Name", "type": "text"},
-      {"name": "comments", "label": "Comments", "type": "textarea"},
-      {"name": "template", "label": "Template", "type": "select", "options": [{"name":"Invoice"}]}
+      # {"name": "comments", "label": "Comments", "type": "textarea"},
+      {"name": "template", "label": "Template", "type": "select", "options": options}
     ]})
     return form
   
-  #otherwise return oauth link so the user can login
+  #otherwise return a form field oauth link so the user can login
   else:
+    logging.info('state tokens dont exist, returning oauth link')
+    encrypted_state_url = encrypt(state_url)
     oauth_return = {
+      "name": "login",
       "type": "oauth_link",
-      ### This URL will redirect to oauth function
-      "oauth_link": ""
+      "label": "Log in",
+      "description": "OAuth Link",
+      #this link will initialize an OAuth flow
+      "oauth_url": f"{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/oauth?state=" + encrypted_state_url
     }
-    return oauth_return
+    logging.info('Oauth return: %s',oauth_return)
+    return json.dumps({"fields":[oauth_return]})
 
-def oauth(request):
 
+# This function builds the URL that redirects the user to an oauth consent screen
+@app.route(f'/actions/{ACTION_NAME}/oauth',  methods=['GET','POST'])
+def oauth():
+  logging.info('Inside the oauth:')
+  encrypted_state_url = request.args.get('state')
+
+  #decrypt just to verify it hasn't been changed by a user
+  try:
+    plainState = decrypt(encrypted_state_url)
+    logging.info('decrypter url '+plainState)
+    if plainState.index('https://') < 0:
+      raise Exception("Expected decrypted state to be a HTTPS URL")
+  except Exception as error:
+    logging.error('Caught this error: ' + repr(error))
+    return {"status":400,"body":"Invalid state"}
+
+  redirect_uri = f"{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/oauth_redirect"
+
+  #create the url
+  #grab the secret json
+  secret_json = json.loads(get_secret("oauth"))
+  scopes = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/script.deployments']
+  flow = google_auth_oauthlib.flow.Flow.from_client_config(secret_json,scopes=scopes)
+  flow.redirect_uri = redirect_uri
+  authorization_url, state = flow.authorization_url(
+    access_type='offline',
+    state=encrypted_state_url,
+    prompt='consent',
+    include_granted_scopes='true')
+  
+  return redirect(authorization_url, code=302)
+  
+
+# This function is used after the oauth consent screen to extract the information received from the authentication server and send over to Looker
+@app.route(f'/actions/{ACTION_NAME}/oauth_redirect',methods=['GET','POST'])
+def oauth_redirect():
+  logging.info('Inside the oauth_redirect:')
+
+  encrypted_state_url = request.args.get('state')
+  #if code doesnt exist in the url then there is an error, you can extract
+  try:
+    code = request.args.get('code')
+  except:
+    error = request.args.get('code')
+    logging.error('Caught this error: ' + repr(error))
+    return {"status":400,"body":"Authentication unsuccessful"}
+
+  #decrypt the state url and uses it to POST state back to Looker 
+  state_url = decrypt(encrypted_state_url)
+  
+  redirect_uri = f"{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/oauth_redirect"
+  tokens = get_accesstoken(code, redirect_uri)
+  logging.info('tokens: ' + repr(tokens))
+  
+  # response = requests.post(state_url, data={"code": code, "redirect": redirect_uri})
+  headers = {'Content-Type': 'application/json'} 
+  try:
+    response = requests.post(state_url, json={**tokens, "redirect":redirect_uri}, headers=headers)
+  except requests.exceptions.RequestException as e: 
+    logging.warning(e)
+    logging.info(repr(response))
+  
+  # if response.status >= 400:
+  #   logging.error(f'Looker state URL responded with {response.status_code}')
+  # else:
+  response = make_response('Login successful. Please close this window and return to Looker',200)
+  response.mimetype = "text/plain"
+  return response
+
+### helper functions ###
+
+#gets the access token from the oauth client
+def get_accesstoken(code, redirect_uri):
+  os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
+  secret_json = json.loads(get_secret("oauth"))
+  scopes = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/script.deployments']
+  flow = google_auth_oauthlib.flow.Flow.from_client_config(secret_json,scopes=scopes)
+  flow.redirect_uri = redirect_uri
+  tokens = flow.fetch_token(code=code)
+  return tokens
+  
+
+#grabs a secret from the secret manager
+def get_secret(secret_name):
+  client = secretmanager.SecretManagerServiceClient()
+  name = f"projects/{PROJECT_ID}/secrets/{secret_name}/versions/latest"
+  response = client.access_secret_version(request={"name": name})
+  payload = response.payload.data.decode("UTF")
+  return payload
+
+#encrypts a string using the specified password 
+def encrypt(string):
+  key = get_secret("encryption_key")
+  string = string.encode()
+  f = Fernet(key.encode())
+  token = f.encrypt(string)
+  return token.decode()
+  
+#decrypts a string using the specified password
+def decrypt(token):
+  key = get_secret("encryption_key")
+  token = token.encode()
+  f = Fernet(key.encode())
+  result= f.decrypt(token)
+  return result.decode()
+
+#grab the access token for making api calls 
+#def get_accestoken():
 
 # def action_execute(request):
 #     file_type = request["form_param"]["file_type"]
@@ -101,13 +253,6 @@ def oauth(request):
 
 
 
-
-
-#use state json from request to see if we can grab accesstoken
-#then initialize the client with the access token
-
-
-
 #accessToken --> tells us if user is signed in
 #checks for request.params.state_json, which caontains code and redirect if both are present then call getAccessTokenFromCode
 #getAccessTokenFromCode ---> sets out access token by......
@@ -118,53 +263,7 @@ def oauth(request):
 #if the access token exists we want to save that back into our form state, so we creae a new state object (with {access_token: accessToken} as state.data)
 # then we reutn this along with our form object from the form function
 
-#if no access token exists then the user is not logged in yet, and we need to return the login information like this
-# form.state = new Hub.ActionState()
-# form.fields.push({
-#         name: "login",
-#         type: "oauth_link",
-#         label: "Log in",
-#         description: "In order to send to a Dropbox file or folder now and in the future, you will need to log in" +
-#           " once to your Dropbox account.",
-#         oauth_url: `${process.env.ACTION_HUB_BASE_URL}/actions/dropbox/oauth?state=${ciphertextBlob}`,
-#       })
 
 
 
 
-### SAMPLE OAUTH CODE
-
-
-# Use the client_secret.json file to identify the application requesting
-# authorization. The client ID (from that file) and access scopes are required.
-flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-    'client_secret.json',
-    scopes=['https://www.googleapis.com/auth/drive.metadata.readonly'])
-
-# Indicate where the API server will redirect the user after the user completes
-# the authorization flow. The redirect URI is required. The value must exactly
-# match one of the authorized redirect URIs for the OAuth 2.0 client, which you
-# configured in the API Console. If this value doesn't match an authorized URI,
-# you will get a 'redirect_uri_mismatch' error.
-flow.redirect_uri = 'https://www.example.com/oauth2callback'
-
-# Generate URL for request to Google's OAuth 2.0 server.
-# Use kwargs to set optional request parameters.
-authorization_url, state = flow.authorization_url(
-    # Enable offline access so that you can refresh an access token without
-    # re-prompting the user for permission. Recommended for web server apps.
-    access_type='offline',
-    # Enable incremental authorization. Recommended as a best practice.
-    include_granted_scopes='true')
-
-
-
-
-    #This function determines the form input
-# def action_form(request):
-#   print(request)
-#   return json.dumps({"fields":[
-#   #   {"name": "file_type", "label": "File Type", "type": "select", "options": [{"name":"PDF"}, {"name":"DOC"}, {"name":"XLS"}]},
-#     {"name": "comments", "label": "Comments", "type": "textarea"}
-#   #   {"name": "template", "label": "Template", "type": "select", "options": [{"name":"Invoice"}]}
-#   ]})

@@ -1,0 +1,10 @@
+.gcloudignore
+.git
+.gitignore
+__pycache__/
+/setup.cfg
+/env
+/.vscode
+app_script
+README.d
+sample.json
