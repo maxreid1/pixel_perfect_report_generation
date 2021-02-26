@@ -35,23 +35,28 @@ client = google.cloud.logging.Client()
 client.get_default_handler()
 client.setup_logging()
 
+
+
+
 # This function lists all the action from the action server
 @app.route('/', methods=['POST'])
 def action_list():
   logging.info('Inside the action_list: ')
+  # get data uri from logo
+  image_uri = base64.b64encode(open("pixel_perfect.png", "rb").read()).decode()
   list_ = {
         "label": "My Action Hub",
         "integrations": [
             {
             "name": ACTION_NAME,
             "label": "Create Pixel Perfect Document",
+            "icon_data_uri": "data:image/png;base64,"+image_uri,
             "supported_action_types": ["query"],
             "supported_formats": ["json"],
             "url": f'{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/execute',
             "form_url": f'{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/form',
-            "uses_oauth": True, 
-            # "icon_data_uri"
-            }
+            "uses_oauth": True
+             }
         ]
         }
   return list_
@@ -100,10 +105,13 @@ def oauth_form():
       if page_token is None:
           break
 
+    user_info = get_user_info(credentials)
+    name = user_info['name']
+    
     #return form for user in the scheduler
     form = {"fields":[
       {"name": "template", "label": "Template", "default": template_options[0]["name"],"required": True,"type": "select", "options": template_options},
-      {"name": "name", "label": "Name", "type": "text"},{"name": "comments", "label": "Comments", "type": "textarea"}]}
+      {"name": "name", "label": "Name", "default": "Pixel Perfect Document for "+name,"required": True,"type": "text"},{"name": "comments", "label": "Comments", "type": "textarea"}]}
     
     #send the access token back in the state
     form['state'] = {}
@@ -226,8 +234,7 @@ def action_execute():
   file_id = new_document_response['id']
 
   #get user info & email
-  oauth2_client = build('oauth2','v2',credentials=credentials)
-  user_info= oauth2_client.userinfo().get().execute()
+  user_info = get_user_info(credentials)
   email = user_info['email']
 
   #run the apps script to populate the data
@@ -313,3 +320,10 @@ def decrypt(token):
   f = Fernet(key.encode())
   result= f.decrypt(token)
   return result.decode()
+
+#get user info & email
+def get_user_info(credentials): 
+  oauth2_client = build('oauth2','v2',credentials=credentials)
+  # pylint: disable=maybe-no-member
+  user_info= oauth2_client.userinfo().get().execute()
+  return user_info
