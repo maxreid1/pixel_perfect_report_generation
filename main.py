@@ -21,6 +21,15 @@ ACTION_NAME='pixel_perfect'
 PROJECT_ID = "looker-private-demo"
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
+# Script Mapper (maps template documents to scripts that should be run)
+script_mapper={'1nyG8wDznWjZpXDaPVxwwa4w2DITWzsA27cZ2j5WEHUY':'AKfycbwmZjVncqKg6k3sGZkch3p3soJxoJ8UQoxwiMPq3qBFn3UydUHK2ZV-raKgIc9Al1FFvA',
+'1OBytDdCD0RujEms8cQorRJsxEHtZAazo15vWDl2hOBc':'AKfycbwmZjVncqKg6k3sGZkch3p3soJxoJ8UQoxwiMPq3qBFn3UydUHK2ZV-raKgIc9Al1FFvA'}
+
+scopes = ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/drive.scripts', 'https://www.googleapis.com/auth/script.external_request', 
+      'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/documents',
+      'https://www.googleapis.com/auth/drive']
+
+
 # Setup logging in google cloud
 client = google.cloud.logging.Client()
 client.get_default_handler()
@@ -37,10 +46,11 @@ def action_list():
             "name": ACTION_NAME,
             "label": "Create Pixel Perfect Document",
             "supported_action_types": ["query"],
-            "supported_formats": ["inline_json"],
+            "supported_formats": ["json"],
             "url": f'{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/execute',
             "form_url": f'{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/form',
-            "uses_oauth": True
+            "uses_oauth": True, 
+            # "icon_data_uri"
             }
         ]
         }
@@ -50,7 +60,6 @@ def action_list():
 @app.route(f'/actions/{ACTION_NAME}/form', methods=['POST'])
 def oauth_form():
   logging.info('Inside the oauth_form')
-  logging.info('Body: %s', request.get_data())
 
   #state_url is a special one-time-use URL that sets a user’s state for a given action.
   data = json.loads(request.data.decode())['data']
@@ -58,9 +67,8 @@ def oauth_form():
   state_json = json.loads(data['state_json'])
 
   # figure out if the user is authenticated, if the user is authenticated then return the form
-  if 'access_token' in data['state_json']:
+  if 'access_token' in state_json and state_json['expires_at'] > datetime.datetime.now().timestamp() and all(s in state_json['scope'] for s in scopes):
     logging.info('state token exist, returning form')
-    logging.info('state json %s',repr(state_json))
 
     #create credentials object
     secret = get_secret("oauth")
@@ -83,26 +91,25 @@ def oauth_form():
       response = drive_service.files().list(q="'13ErW1EI9nPnQdcEWhVGWYAO0T7uyNs6Y' in parents", spaces='drive',
           fields='nextPageToken, files(id, name, mimeType)', supportsAllDrives=True, pageToken=page_token).execute()
       for file in response.get('files', []):
-        doc_type = str.split(file.get('mimeType'),".")[2].capitalize()
-        filename = file.get('name') + ' (' + doc_type + ')'
-        logging.info(filename)
-        template_options.append({"name":file.get('id'), "label":filename})
+        f_id = file.get('id')
+        if f_id in script_mapper:
+          doc_type = str.split(file.get('mimeType'),".")[2].capitalize()
+          filename = file.get('name') + ' (' + doc_type + ')'
+          template_options.append({"name":f_id, "label":filename})
         page_token = response.get('nextPageToken', None)
       if page_token is None:
           break
 
-    #options = [{"name":"Invoice"}]
     #return form for user in the scheduler
     form = {"fields":[
       {"name": "template", "label": "Template", "default": template_options[0]["name"],"required": True,"type": "select", "options": template_options},
-      {"name": "name", "label": "Name", "type": "text"}]}
+      {"name": "name", "label": "Name", "type": "text"},{"name": "comments", "label": "Comments", "type": "textarea"}]}
     
     #send the access token back in the state
     form['state'] = {}
     form['state']['data']=json.dumps(state_json)
     form['state']['refresh_time']=600
    
-    logging.info('form '+ repr(form))
     return form
   
   # #otherwise return a form field oauth link so the user can login
@@ -117,7 +124,7 @@ def oauth_form():
     #this link will initialize an OAuth flow
     "oauth_url": f"{ACTION_HUB_BASE_URL}/actions/{ACTION_NAME}/oauth?state=" + encrypted_state_url
   }
-  logging.info('Oauth return: %s',oauth_return)
+
   return json.dumps({"fields":[oauth_return]})
 
 # This function builds the URL that redirects the user to an oauth consent screen
@@ -129,7 +136,6 @@ def oauth():
   #decrypt just to verify it hasn't been changed by a user
   try:
     plainState = decrypt(encrypted_state_url)
-    logging.info('decrypter url '+plainState)
     if plainState.index('https://') < 0:
       raise Exception("Expected decrypted state to be a HTTPS URL")
   except Exception as error:
@@ -181,6 +187,7 @@ def oauth_redirect():
   # if response.status >= 400:
   #   logging.error(f'Looker state URL responded with {response.status_code}')
   # else:
+
   response = make_response('Login successful. Please close this window and return to Looker',200)
   response.mimetype = "text/plain"
   return response
@@ -189,28 +196,19 @@ def oauth_redirect():
 #execute 
 @app.route(f'/actions/{ACTION_NAME}/execute',methods=['POST'])
 def action_execute():
-  logging.info('Body: %s', request.get_data())
   data = json.loads(request.data.decode())
 
-  logging.info('data keys: %s',data.keys())
-  template = data["form_params"]["template"]
   # to do: what happens if name is blank?
   name = data["form_params"]["name"]
-  looker_data = data["data"]
-  params = request.query_string.decode()
-  logging.info('params: %s', params)
+  templateId = data["form_params"]["template"]
+  comments = data["form_params"]["comments"]
+  state_json = json.loads(data["data"]["state_json"])
+  looker_data = json.loads(data["attachment"]["data"])
   filters = data["scheduled_plan"]["query"]["filters"]
-  ######for some reason this is missing
-  state_json = json.loads(data["state"]["data"])
-
-  # params = request.query_string.decode()
-  # request.json
-  # logging.info('params: %s', params)
-  # state_json = json.loads(request.args.get('state'))
 
   secret = get_secret("oauth")
   web_secret = json.loads(secret)['web']
-  credentials = credentials = google.oauth2.credentials.Credentials(
+  credentials = google.oauth2.credentials.Credentials(
     state_json["access_token"],
     refresh_token = state_json["refresh_token"],
     id_token = state_json["id_token"],
@@ -219,27 +217,68 @@ def action_execute():
     client_secret = web_secret["client_secret"],
     scopes = state_json["scope"])
 
-  drive_service = build('drive', 'v3', credentials=credentials)
-
-  copied_file = {'title': name}
+  #create a copy of the document
+  drive_service = build('drive', 'v3', credentials=credentials, cache_discovery=False)
+  copied_file = {'name': name, 'parents': [ { "id" : "root" } ]}
   # pylint: disable=maybe-no-member
   new_document_response = drive_service.files().copy(
-          fileId=template, body=copied_file).execute()
-  
+          supportsAllDrives=True, fileId=templateId, body=copied_file).execute()
+  file_id = new_document_response['id']
+
+  #get user info & email
+  oauth2_client = build('oauth2','v2',credentials=credentials)
+  user_info= oauth2_client.userinfo().get().execute()
+  email = user_info['email']
+
+  #run the apps script to populate the data
+  script_service = build('script', 'v1', credentials=credentials)
+
+  client_id = timeframe = ''
+  if 'trans.transaction_date' in filters:
+    timeframe = filters['trans.transaction_date'].title()
+  if 'client.client_id' in filters:
+    client_id = filters['client.client_id']
+
+  if templateId in script_mapper:
+    logging.info("calling script")
+    script_request = {"function": "insertData", "parameters": [file_id, user_info['name'], email, timeframe, client_id, comments,looker_data]}
+    logging.info(repr(script_request))
+    script_response = script_service.scripts().run(body=script_request, scriptId=script_mapper[templateId]).execute()
+    logging.info(repr(script_response))
+  else:
+    app.make_response(('Script for template not found', 404))
+
+  #move to my drive root folder
+  try:
+    file = drive_service.files().get(fileId=file_id,
+                                    fields='parents').execute()
+    previous_parents = ",".join(file.get('parents'))
+    file = drive_service.files().update(fileId=file_id,
+                                        addParents='root',
+                                        removeParents=previous_parents,
+                                        fields='id, parents').execute()
+  except:
+    logging.warning('Not able to move template to root drive')
+
+  #give the user write access
   user_permission = {
       'type': 'user',
-      'role': 'writer',
-      'emailAddress': 'reidjohn@google.com'
+      'role': 'reader',
+      'emailAddress': email
   }
-  permission_response = drive_service.permissions().create(
-          fileId=new_document_response["id"],
-          body=user_permission,
-          fields='id',
-  ).execute()
 
-  logging.info(permission_response)
+  try:
+    permission_response = drive_service.permissions().create(
+            fileId=new_document_response["id"],
+            sendNotificationEmail=True,
+            emailMessage="Your new pixel perfect report has been created from Looker", 
+            body=user_permission,
+            fields='id',
+    ).execute()
+  except:
+    logging.warning('Not able to share new document')
 
-  return 'Complete'
+  return app.make_response(('Successfully created and shared document',200))
 
 ### helper functions ###
 
@@ -247,7 +286,6 @@ def action_execute():
 def create_oauth_flow(redirect_uri):
   os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
   secret_json = json.loads(get_secret("oauth"))
-  scopes = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/script.deployments']
   flow = google_auth_oauthlib.flow.Flow.from_client_config(secret_json,scopes=scopes)
   flow.redirect_uri = redirect_uri
   return flow
@@ -275,29 +313,3 @@ def decrypt(token):
   f = Fernet(key.encode())
   result= f.decrypt(token)
   return result.decode()
-
-
-
-
-
-# script_service = discovery.build('script', 'v1', http=http)
-#     request = {"function": "insertData", "devMode": True, "parameters": [
-#         invoice_doc_id, invoice['number'], invoice['date'], invoice['noVAT'], invoice['client'], invoice['lines']]}
-#     response = script_service.scripts().run(body=request, scriptId=SCRIPT_ID).execute()
-#     print("Execution response: %s" % str(response))
-
-
-
-#accessToken --> tells us if user is signed in
-#checks for request.params.state_json, which caontains code and redirect if both are present then call getAccessTokenFromCode
-#getAccessTokenFromCode ---> sets out access token by......
-
-#then we call dropboxClientFromRequest using our request and accessToken
-#we could use the access token to make an API call to google drive so the user can do select the name of the gdrive template or something like that
-
-#if the access token exists we want to save that back into our form state, so we creae a new state object (with {access_token: accessToken} as state.data)
-# then we reutn this along with our form object from the form function
-
-
-
-  
