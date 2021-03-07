@@ -209,10 +209,14 @@ def action_execute():
   # to do: what happens if name is blank?
   name = data["form_params"]["name"]
   templateId = data["form_params"]["template"]
-  comments = data["form_params"]["comments"]
   state_json = json.loads(data["data"]["state_json"])
   looker_data = json.loads(data["attachment"]["data"])
   filters = data["scheduled_plan"]["query"]["filters"]
+
+  if "comments" in data["form_params"]:
+    comments = data["form_params"]["comments"]
+  else:
+    comments = ""
 
   secret = get_secret("oauth")
   web_secret = json.loads(secret)['web']
