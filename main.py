@@ -58,7 +58,7 @@ def action_list():
         "integrations": [
             {
             "name": ACTION_NAME,
-            "label": "Create Pixel Perfect Document",
+            "label": "Create Chargeback Invoice",
             "icon_data_uri": "data:image/png;base64,"+image_uri,
             "supported_action_types": ["query"],
             "supported_formats": ["json"],
